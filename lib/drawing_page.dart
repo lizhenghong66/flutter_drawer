@@ -1,6 +1,5 @@
 import 'dart:async';
 
-
 import 'package:flutter_drawer/drawn_line.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -14,11 +13,10 @@ class DrawingPage extends StatefulWidget {
 class _DrawingPageState extends State<DrawingPage> {
   GlobalKey _globalKey = new GlobalKey();
   List<DrawnLine> lines = <DrawnLine>[];
-  DrawnLine? line = DrawnLine([],Colors.black,5); 
+  DrawnLine? line = DrawnLine([], Colors.black, 5);
   Color selectedColor = Colors.black;
   double selectedWidth = 5.0;
   Color selectedBackColor = Colors.white;
- 
 
   Future<void> save() async {
     // TODo
@@ -26,84 +24,75 @@ class _DrawingPageState extends State<DrawingPage> {
 
   Future<void> clear() async {
     setState(() {
-    lines = [];
-    line = null;
-  });
+      lines = [];
+      line = null;
+    });
   }
 
-GestureDetector buildCurrentPath(BuildContext context) {
+  GestureDetector buildCurrentPath(BuildContext context) {
     return GestureDetector(
-    onPanStart: onPanStart,
-    onPanUpdate: onPanUpdate,
-    onPanEnd: onPanEnd,
-    child: RepaintBoundary(
-      child: Container(
-        color: Colors.transparent,
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        child: CustomPaint(
-          painter: Sketcher(lines: lines),
-        ),// CustomPaint widget will go here
+      onPanStart: onPanStart,
+      onPanUpdate: onPanUpdate,
+      onPanEnd: onPanEnd,
+      child: RepaintBoundary(
+        child: Container(
+          color: Colors.transparent,
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          child: CustomPaint(
+            painter: Sketcher(lines: lines),
+          ), // CustomPaint widget will go here
+        ),
       ),
-    ),
-            );
-}
-
-    
-    
+    );
+  }
 
   void onPanStart(DragStartDetails details) {
-   final box = context.findRenderObject() as RenderBox;
-  final point = box.globalToLocal(details.globalPosition);
-  setState(() {
-    line = DrawnLine([point], selectedColor, selectedWidth);
-  });
- 
+    final box = context.findRenderObject() as RenderBox;
+    final point = box.globalToLocal(details.globalPosition);
+    setState(() {
+      line = DrawnLine([point], selectedColor, selectedWidth);
+    });
   }
 
   void onPanUpdate(DragUpdateDetails details) {
     final box = context.findRenderObject() as RenderBox;
-  final point = box.globalToLocal(details.globalPosition);
-  List<Offset> path = List.from(line!.path)..add(point);
-  line = DrawnLine(path, selectedColor, selectedWidth);
+    final point = box.globalToLocal(details.globalPosition);
+    List<Offset> path = List.from(line!.path)..add(point);
+    line = DrawnLine(path, selectedColor, selectedWidth);
 
-  setState(() {
-    if (lines.length == 0) {
-      lines.add(line!);
-    } else {
-      lines[lines.length - 1] = line!;
-    }
-  });
-
-
+    setState(() {
+      if (lines.length == 0) {
+        lines.add(line!);
+      } else {
+        lines[lines.length - 1] = line!;
+      }
+    });
   }
 
   void onPanEnd(DragEndDetails details) {
     setState(() {
-    lines.add(line!);
-  });
-  
+      lines.add(line!);
+    });
   }
 
-  
-  Widget? buildAllPaths(BuildContext context) {
-  }
+  Widget? buildAllPaths(BuildContext context) {}
 
   Widget buildStrokeToolbar() {
-  return Positioned(
-    bottom: 100.0,
-    right: 10.0,
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        buildStrokeButton(5.0),
-        buildStrokeButton(10.0),
-        buildStrokeButton(15.0),
-      ],
-    ),
-  );
-}
+    return Positioned(
+      bottom: 100.0,
+      right: 10.0,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          buildStrokeButton(5.0),
+          buildStrokeButton(10.0),
+          buildStrokeButton(15.0),
+        ],
+      ),
+    );
+  }
 
   Widget buildStrokeButton(double strokeWidth) {
     return GestureDetector(
@@ -115,32 +104,33 @@ GestureDetector buildCurrentPath(BuildContext context) {
         child: Container(
           width: strokeWidth * 2,
           height: strokeWidth * 2,
-          decoration: BoxDecoration(color: selectedColor, borderRadius: BorderRadius.circular(20.0)),
+          decoration: BoxDecoration(
+              color: selectedColor, borderRadius: BorderRadius.circular(20.0)),
         ),
       ),
     );
   }
 
   Widget buildColorToolbar() {
-  return Positioned(
-    top: 40.0,
-    right: 10.0,
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        buildClearButton(),
-        buildColorButton(Colors.red),
-        buildColorButton(Colors.blueAccent),
-        buildColorButton(Colors.deepOrange),
-        buildColorButton(Colors.green),
-        buildColorButton(Colors.lightBlue),
-        buildColorButton(Colors.black),
-        buildColorButton(Colors.white),
-      ],
-    ),
-  );
-}
+    return Positioned(
+      top: 40.0,
+      right: 10.0,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          buildClearButton(),
+          buildColorButton(Colors.red),
+          buildColorButton(Colors.blueAccent),
+          buildColorButton(Colors.deepOrange),
+          buildColorButton(Colors.green),
+          buildColorButton(Colors.lightBlue),
+          buildColorButton(Colors.black),
+          buildColorButton(Colors.white),
+        ],
+      ),
+    );
+  }
 
   Widget buildColorButton(Color color) {
     return Padding(
@@ -184,17 +174,13 @@ GestureDetector buildCurrentPath(BuildContext context) {
     );
   }
 
-
-Widget buildBackColorToolbar() {
-  return 
-     Align( 
+  Widget buildBackColorToolbar() {
+    return Align(
       alignment: Alignment.bottomCenter,
-       child: Row(
-        
+      child: Row(
         crossAxisAlignment: CrossAxisAlignment.end,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-        
           buildBackColorButton(Colors.red),
           buildBackColorButton(Colors.blueAccent),
           buildBackColorButton(Colors.deepOrange),
@@ -203,13 +189,12 @@ Widget buildBackColorToolbar() {
           buildBackColorButton(Colors.black),
           buildBackColorButton(Colors.white),
         ],
-         ),
-     );
-  
-}
+      ),
+    );
+  }
 
-Widget buildBackColorButton(Color color){
-return Padding(
+  Widget buildBackColorButton(Color color) {
+    return Padding(
       padding: const EdgeInsets.all(4.0),
       child: FloatingActionButton(
         mini: true,
@@ -222,20 +207,20 @@ return Padding(
         },
       ),
     );
-}
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: selectedBackColor,
       body: Stack(
         children: [
-                buildCurrentPath(context),
-                buildColorToolbar(),
-                buildStrokeToolbar(),
-                buildBackColorToolbar(),
+          buildCurrentPath(context),
+          buildColorToolbar(),
+          buildStrokeToolbar(),
+          buildBackColorToolbar(),
         ],
       ),
     );
   }
-
 }
